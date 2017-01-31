@@ -19,4 +19,3 @@ print("Loaded model from disk")
 
 
 plot(loaded_model, to_file='model.png')
-SVG(model_to_dot(loaded_model).create(prog='dot', format='svg'))
