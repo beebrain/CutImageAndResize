@@ -10,7 +10,7 @@ import os
 import MainCut as MC
 
 class FileAssert(object):
-    def __init__(self,currentPath = "image"):
+    def __init__(self,currentPath = "image",size = 64):
         self.currentPath = currentPath
         self.configFile = "Dataset.txt"
         self.imageData = "ImageDataset"
@@ -148,7 +148,7 @@ class FileAssert(object):
 
 
 
-# FileAssert().resizeImage()
+# FileAssert(size=128).resizeImage()
 # imageDataset,imageGray,detailDataset = FileAssert().packData()
 #
 # (x,y)=FileAssert().unpackDataset(False)

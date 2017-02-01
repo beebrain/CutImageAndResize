@@ -19,3 +19,4 @@ print("Loaded model from disk")
 
 
 plot(loaded_model, to_file='model.png')
+
