@@ -3,23 +3,30 @@ import os
 import FileAssert as fa
 import cv2
 
-def load_data(color = True):
-    fileAssert = fa.FileAssert()
-    xdata,ydata = fileAssert.unpackDataset(color)
+
+def load_data(color = True,personalselected = 1):
+    fileAssert = fa.FileAssert(size=64)
+    xdata,x_gData,ydata = fileAssert.unpackDataset()    #color,gray,detail
+    #detail description
+    #[class,personal,filename]
+
+
     class_label = ydata[:,0]
     personal = ydata[:,1]
-    trainingindex  = np.where(personal<=9)     #select dataset
-    testingindex = np.where(personal > 9)  # select dataset
+    trainingindex  = np.where(personal <> personalselected)     #select dataset
+    testingindex = np.where(personal == personalselected)  # select dataset
 
     print trainingindex
-    class_label_selected = class_label[trainingindex]
-    # X_train = np.zeros((trainingindex, 3, 200, 200), dtype="uint8")
-    # Y_train = np.zeros((trainingindex,), dtype="uint8")
+    print testingindex
+    if color == True:
+        X_train = xdata[trainingindex]
+        X_test = xdata[testingindex]
+    else:
+        X_train = x_gData[trainingindex]
+        X_test = x_gData[testingindex]
 
-    X_train = xdata[trainingindex]
+
     Y_train = class_label[trainingindex]
-
-    X_test = xdata[testingindex]
     Y_test = class_label[testingindex]
 
     Y_train = np.reshape(Y_train, (len(Y_train), 1))
@@ -35,5 +42,5 @@ def load_data(color = True):
     return (X_train, Y_train), (X_test, Y_test)
 
 
-# (X_train, y_train), (X_test, y_test) = load_data()
+# (X_train, y_train), (X_test, y_test) = load_data(False)
 # print X_test

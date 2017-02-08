@@ -19,7 +19,7 @@ def thresholdWithYCC(img):
     valueofGaussian = (13, 13)
     gray = cv2.GaussianBlur(gray, valueofGaussian, 0)           # used GaussianBlur for smote edge
     # cv2.imshow("gray_mask", gray)
-    res, thres = cv2.threshold(gray, 70, 255, cv2.THRESH_BINARY )     #Extract hand from backgroud + cv2.THRESH_OTSU
+    res, thres = cv2.threshold(gray, 50, 255, cv2.THRESH_BINARY )     #Extract hand from backgroud + cv2.THRESH_OTSU
     # cv2.imshow("GraySkintone", thres)
 
     mask_skinTone_binary = fillHold(thres)
@@ -61,8 +61,8 @@ def createImageToRealSize(ROI,size=(200,200,3)):
 
 def process(img,size=200):
     thresh_skin,skincolor = thresholdWithYCC(img)
-    # cv2.imshow("skinColor",skincolor)
-
+    # cv2.imshow("skinColor",thresh_skin)
+    # cv2.waitKey(0)
     contours , hierarchy = cv2.findContours(thresh_skin,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
     areas = [cv2.contourArea(Contour) for Contour in contours]          #find The area in controurArea list
     print areas
@@ -74,9 +74,6 @@ def process(img,size=200):
     ROI = createImageToRealSize(ROI,size=(size,size,3))
     cv2.imshow("ROI",ROI)
     return ROI
-
-
-    imageGray = cv2.cvtColor(skincolor, cv2.COLOR_BGR2GRAY)             # Skincolor ROT Convert TO Gray Scale
 
 # image2 = cv2.imread("Image/P06/01/P1190027.jpg")
 # small = cv2.resize(image2, (0,0), fx=1, fy=1)

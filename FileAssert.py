@@ -15,7 +15,7 @@ class FileAssert(object):
         self.configFile = "Dataset.txt"
         self.imageData = "ImageDataset"
         self.detailData = "DetailDataset"
-        self.size = 64
+        self.size = size
         #self.writeEmptyDataset()
         #self.readFile(self.currentPath)
 
@@ -38,15 +38,15 @@ class FileAssert(object):
 
     #for read raw dataset , it's have (class,personal,filename,height,width,chanels,imagedata_on_one_dimetion)
     #and unpackdataset to two value one is datadetail ,anather one is imagedataset
-    def unpackDataset(self,color=True):
+    def unpackDataset(self):
         if not (os.path.exists(self.detailData) and os.path.isfile(self.imageData)):
             detailDataset = np.load(self.detailData + ".npy")
-            if color :
-                imgDataset = np.load(self.imageData+".npy")
-                imgDataset = imgDataset.reshape((-1,self.size,self.size,3))
-            else:   # GrayScale
-                imgDataset = np.load(self.imageData + "_Gray.npy")
-                imgDataset = imgDataset.reshape((-1, self.size, self.size))
+
+            imgDataset = np.load(self.imageData+".npy")
+            imgDataset = imgDataset.reshape((-1,self.size,self.size,3))
+
+            imgDataset_gray = np.load(self.imageData + "_gray.npy")
+            imgDataset_gray = imgDataset_gray.reshape((-1, self.size, self.size))
 
             #Make sure dataset print out
             # for index in xrange(len(imgDataset)):
@@ -59,7 +59,7 @@ class FileAssert(object):
             # change Personal to index personal
             detailDataset[:,1] = [str.replace(w,"P","") for w in detailDataset[:,1]]
             # print detailDataset
-        return (imgDataset.astype('uint8'),detailDataset[:,:2].astype('int'))
+        return (imgDataset.astype('uint8'),imgDataset_gray.astype('uint8'),detailDataset[:,:2].astype('int'))
 
     def resizeImage(self):
         configpath = self.readDataSetConfigFile()
@@ -73,7 +73,7 @@ class FileAssert(object):
             imageresize = MC.process(image2,self.size)
             cv2.imwrite(str("./resize/" + list[3] + "_" + list[2] + "_" + str(listpath).zfill(4) + ".jpg"), imageresize)
             # cv2.waitKey(0)
-            cv2.destroyAllWindows()
+            # cv2.destroyAllWindows()
 
     def packData(self,path="./resize"):
         if path == "":
@@ -124,16 +124,14 @@ class FileAssert(object):
                 print len(detailData)
                 print "Data Not Matched"
             print "saved"
-
-
         return imageData,img_gray,detailData
 
     def confirmDataset(self):
         listdata = np.load("CompleteDataSet.npy")
 
-    def writeDataSetFile(self,path = ""):
+    def writeDataSetFile(self,path = ".\image"):
         if path == "":
-            print "Don't have File"
+            path = self.configFile
         else :
             for (dirpath, dirnames, filenames) in walk(path):
                 listFolder = []
@@ -147,9 +145,14 @@ class FileAssert(object):
                         print dirpath+"\\"+filenames[iFile]+","+str(str.split(dirpath,"\\")[1:4]).strip('[]').replace("'", "").replace(" ","")+","+filenames[iFile]
 
 
-
-# FileAssert(size=128).resizeImage()
-# imageDataset,imageGray,detailDataset = FileAssert().packData()
+# FileA = FileAssert(size=64)
+# FileA.writeDataSetFile()
+# FileA.resizeImage()
+# imageDataset,imageGray,detailDataset = FileAssert(size=64).packData()
+# for index in xrange(len(imageGray)):
+#     cv2.imshow("xxx", imageGray[index])
+#     cv2.waitKey(0)
+#     cv2.destroyAllWindows()
 #
 # (x,y)=FileAssert().unpackDataset(False)
 #
